@@ -8,24 +8,6 @@ This application helps manage hospital operations digitally by providing feature
 
 ---
 
-# Project Overview
-
-The Hospital Management System is designed to simplify healthcare management processes by replacing manual record handling with a centralized digital platform.
-
-
-The system allows administrators and hospital staff to efficiently manage:
-
-
-- Doctor records
-
--  Patient information
-
--  Appointment scheduling
-
--  Medical management operations
-
----
-
 
 
 # Project Overview
