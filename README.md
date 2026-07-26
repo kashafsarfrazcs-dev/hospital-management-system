@@ -402,7 +402,7 @@ http://localhost:5173
 
 
 
-# 🔐 Environment Variables
+# Environment Variables
 
 
 
@@ -510,7 +510,7 @@ DELETE /api/appointments/:id
 
 
 
-# 🚀 Future Improvements
+# Future Improvements
 
 
 
