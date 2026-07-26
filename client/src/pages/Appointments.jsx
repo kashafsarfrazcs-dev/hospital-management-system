@@ -5,8 +5,7 @@ import API from "../api/axios";
 import "../styles/appointments.css";
 
 
-
-function Appointments(){
+function Appointments() {
 
 
 const user = JSON.parse(
@@ -17,10 +16,8 @@ const user = JSON.parse(
 const role = user?.role;
 
 
-
 const canManage =
 role === "admin" || role === "receptionist";
-
 
 
 
@@ -32,29 +29,24 @@ const [form,setForm] = useState({
 
 patient:"",
 doctor:"",
-date:"",
-time:"",
-status:"Pending"
+appointmentDate:"",
+status:"Pending",
+notes:""
 
 });
 
 
 
 
-
-// Get Appointments
+// Get All Appointments
 
 const getAppointments = async()=>{
 
-
 try{
-
 
 const res = await API.get("/appointments");
 
-
 setAppointments(res.data);
-
 
 }
 
@@ -64,19 +56,14 @@ console.log(error);
 
 }
 
-
 };
-
-
 
 
 
 
 useEffect(()=>{
 
-
 getAppointments();
-
 
 },[]);
 
@@ -84,7 +71,7 @@ getAppointments();
 
 
 
-
+// Handle Input Change
 
 const handleChange=(e)=>{
 
@@ -104,10 +91,7 @@ setForm({
 
 
 
-
-
-
-// Add Appointment
+// Create Appointment
 
 const addAppointment = async(e)=>{
 
@@ -115,16 +99,12 @@ const addAppointment = async(e)=>{
 e.preventDefault();
 
 
-
 try{
 
 
 await API.post(
-
 "/appointments",
-
 form
-
 );
 
 
@@ -133,9 +113,9 @@ setForm({
 
 patient:"",
 doctor:"",
-date:"",
-time:"",
-status:"Pending"
+appointmentDate:"",
+status:"Pending",
+notes:""
 
 });
 
@@ -147,18 +127,14 @@ getAppointments();
 
 }
 
-
 catch(error){
 
-console.log(error);
+console.log(error.response?.data || error.message);
 
 }
 
 
 };
-
-
-
 
 
 
@@ -174,9 +150,7 @@ try{
 
 
 await API.delete(
-
 `/appointments/${id}`
-
 );
 
 
@@ -184,12 +158,11 @@ await API.delete(
 getAppointments();
 
 
-
 }
 
 catch(error){
 
-console.log(error);
+console.log(error.response?.data || error.message);
 
 }
 
@@ -204,7 +177,6 @@ console.log(error);
 
 
 return(
-
 
 
 <div className="appointment-page">
@@ -228,8 +200,6 @@ return(
 
 canManage &&
 
-
-
 <form
 
 className="appointment-form"
@@ -237,6 +207,7 @@ className="appointment-form"
 onSubmit={addAppointment}
 
 >
+
 
 
 
@@ -276,41 +247,19 @@ required
 
 
 
-
-
 <input
 
 type="date"
 
-name="date"
+name="appointmentDate"
 
-value={form.date}
-
-onChange={handleChange}
-
-required
-
-/>
-
-
-
-
-
-
-<input
-
-type="time"
-
-name="time"
-
-value={form.time}
+value={form.appointmentDate}
 
 onChange={handleChange}
 
 required
 
 />
-
 
 
 
@@ -342,6 +291,10 @@ Completed
 </option>
 
 
+<option value="Cancelled">
+Cancelled
+</option>
+
 
 </select>
 
@@ -349,7 +302,23 @@ Completed
 
 
 
-<button>
+<textarea
+
+name="notes"
+
+placeholder="Appointment Notes"
+
+value={form.notes}
+
+onChange={handleChange}
+
+/>
+
+
+
+
+
+<button type="submit">
 
 Create Appointment
 
@@ -357,8 +326,8 @@ Create Appointment
 
 
 
-</form>
 
+</form>
 
 
 }
@@ -396,14 +365,13 @@ Date
 
 
 <th>
-Time
+Status
 </th>
 
 
 <th>
-Status
+Notes
 </th>
-
 
 
 {
@@ -417,7 +385,6 @@ Action
 }
 
 
-
 </tr>
 
 
@@ -427,9 +394,7 @@ Action
 
 
 
-
 <tbody>
-
 
 
 {
@@ -437,32 +402,58 @@ Action
 appointments.map((appointment)=>(
 
 
-
 <tr key={appointment._id}>
 
 
 <td>
-{appointment.patient}
+
+{
+appointment.patient?.name ||
+appointment.patient
+}
+
 </td>
 
 
+
 <td>
-{appointment.doctor}
+
+{
+appointment.doctor?.name ||
+appointment.doctor
+}
+
 </td>
 
 
+
+
 <td>
-{appointment.date}
+
+{
+new Date(
+appointment.appointmentDate
+).toLocaleDateString()
+
+}
+
 </td>
 
 
-<td>
-{appointment.time}
-</td>
-
 
 <td>
+
 {appointment.status}
+
+</td>
+
+
+
+
+<td>
+
+{appointment.notes || "No notes"}
+
 </td>
 
 
@@ -472,7 +463,6 @@ appointments.map((appointment)=>(
 {
 
 canManage &&
-
 
 
 <td>
@@ -494,13 +484,12 @@ Delete
 </td>
 
 
-
 }
 
 
 
-</tr>
 
+</tr>
 
 
 ))
@@ -513,7 +502,6 @@ Delete
 </tbody>
 
 
-
 </table>
 
 
@@ -524,7 +512,6 @@ Delete
 
 
 </div>
-
 
 
 )
